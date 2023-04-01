@@ -2,15 +2,14 @@
 // Author: Sebastián Gámez Ariza
 
 // Import database models
-// import BrandModel from '../models/brandModel';
+import accountModel from '../models/account.model.js';
 
 // Sync the database with the models
 const syncDatabase = async () => {
 	// Try to sync the database
 	try {
-		// Sync the database model (Example)
-		// await BrandModel.sync({alter: true});
-
+		// Sync the database
+		await accountModel.sync({force: true});
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
