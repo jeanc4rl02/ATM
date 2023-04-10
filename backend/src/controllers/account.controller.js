@@ -7,6 +7,9 @@ import * as accountService from '../services/account.service.js';
 // Import account schema
 import accountSchema from '../schemas/account.schema.js';
 
+// Import sign token helper
+import signToken from '../helpers/signToken.helper.js';
+
 // Login by identification and pin method
 export const loginByIdentification = async (req, res) => {
     // Create a response object
@@ -23,11 +26,13 @@ export const loginByIdentification = async (req, res) => {
         if (accountDB) {
             // Check if the pin is correct
             if (accountDB.pin === account.pin) {
+                // Sign token
+                const token = signToken(accountDB);
                 // Create the response object
                 response = {
                     status: 200,
                     message: 'Login successful',
-                    data: {...accountDB, pin: ''}
+                    data: {...accountDB, pin: '', token: token}
                 };
             }
             // The pin is incorrect
@@ -67,37 +72,6 @@ export const getAllAccounts = async (req, res) => {
     const response = await accountService.getAllAccountsService();
     res.status(response.status).send(response);
 };
-
-// Get an account by id method
-export const getAccountById = async (req, res) => {
-    // Create a response object
-    let response;
-    // Try to get an account by id
-    try {
-        // Get the id from the request
-        const { id } = req.params;
-        // Get an account by id
-        const { data: account } = await accountService.getAccountByIdService(id);
-        // Create the response object
-        response = {
-            status: 200,
-            message: 'Account found successfully',
-            data: account
-        };
-    }
-    // Catch the error
-    catch (error) {
-        // Log the error
-        console.log(error);
-        // Create the response object
-        response = {
-            status: 500,
-            message: 'Error getting the account'
-        };
-    }
-    // Send the response
-    res.status(response.status).send(response);
-}
 
 // Create an account method
 export const createAccount = async (req, res) => {
