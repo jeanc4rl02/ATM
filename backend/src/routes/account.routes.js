@@ -13,7 +13,22 @@ import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 // Create the router
 const accountRouter = Router();
 
-// Login by identification and pin
+/**
+ * @swagger
+ * tags:
+ *  name: Account
+ *  description: Account management
+ */
+
+/**
+ * @swagger
+ * /api/v1/account/login:
+ *  post:
+ *   summary: Login an account
+ *   description: Login an account
+ *   tags: 
+ *    - Account
+ */
 accountRouter.post('/login', accountController.loginByIdentification);
 
 // Get all accounts
