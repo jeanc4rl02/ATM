@@ -32,14 +32,9 @@ const atmModel = sequelize.define('atm', {
     tableName: 'atms'
 });
 
-// atmModel.hasMany(atmDetail, {
-//     foreignKey: 'atm_id',
-//     sourceKey: 'id'
-// });
-
 // atmDetail.belongsTo(atmModel, {
 //     foreignKey: 'atm_id',
 //     targetId: 'id'
 // });
 
-export default atmModel
+export default atmModel;
