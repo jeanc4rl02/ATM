@@ -8,7 +8,9 @@ import morgan from 'morgan';
 // Importing the cors module
 import cors from 'cors';
 
-// Importing the swagger-ui-express
+import atmRouter from './routes/atm.routes.js'
+
+// Importing the swagger UI
 import swaggerUi from 'swagger-ui-express';
 
 // Importing the swagger configuration
@@ -24,6 +26,8 @@ app.use(morgan('dev'));
 
 // Set routes
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
+// Routes
+app.use('/api/v1/atms', atmRouter);
 
 // Exporting the app
 export default app;
