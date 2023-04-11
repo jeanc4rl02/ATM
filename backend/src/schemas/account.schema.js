@@ -10,6 +10,10 @@ const accountSchema = joi.object({
         .number()
         .integer()
         .min(1),
+    identification: joi
+        .string()
+        .min(3)
+        .max(50),
     accountNumber: joi
         .number()
         .integer()
