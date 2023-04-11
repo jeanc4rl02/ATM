@@ -12,7 +12,9 @@ export const getAllAccountsService = async () => {
     // Try to get all accounts
     try {
         // Get all accounts
-        const accounts = await accountModel.findAll();
+        const accounts = await accountModel.findAll({
+            attributes: { exclude: ['pin'] }
+        });
         // Create the response object
         response = {
             status: 200,
@@ -44,6 +46,40 @@ export const getAccountByIdService = async (id) => {
         const account = await accountModel.findOne({
             where: {
                 id: id
+            },
+            attributes: { exclude: ['pin'] }
+        });
+        // Create the response object
+        response = {
+            status: 200,
+            message: 'Account found successfully',
+            data: account
+        };
+    }
+    // Catch the error
+    catch (error) {
+        // Log the error
+        console.log(error);
+        // Create the response object
+        response = {
+            status: 500,
+            message: 'Error getting the account',
+        };
+    }
+    // Return the response
+    return response;
+};
+
+// Get an account by identification method
+export const getAccountByIdentificationService = async (identification) => {
+    // Create a response object
+    let response;
+    // Try to get an account by identification
+    try {
+        // Get an account by identification
+        const account = await accountModel.findOne({
+            where: {
+                identification: identification
             }
         });
         // Create the response object

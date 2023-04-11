@@ -12,7 +12,11 @@ const accountModel = atmDatabase.define('account', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+    },
+    identification: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
     },
     accountNumber: {
         type: DataTypes.STRING,
