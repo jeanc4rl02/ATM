@@ -76,12 +76,11 @@ export const createAccountService = async (account) => {
     // Try to create a new account
     try {
         // Create a new account
-        const newAccount = await accountModel.create(account);
+        await accountModel.create(account);
         // Create the response object
         response = {
             status: 201,
-            message: 'Account created successfully',
-            data: newAccount
+            message: 'Account created successfully'
         };
     }
     // Catch the error

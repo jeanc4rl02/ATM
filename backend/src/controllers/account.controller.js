@@ -3,15 +3,14 @@
 
 // Import account services
 import * as accountService from '../services/account.service.js';
-
 // Import account schema
 import accountSchema from '../schemas/account.schema.js';
-
 // Import sign token helper
 import signTokenHelper from '../helpers/signToken.helper.js';
-
 // Import random account number helper
 import randomAccountNumberHelper from '../helpers/randomAccountNumber.helper.js';
+// Importing the check if exists in database helper
+import checkIfExistsInDatabaseHelper from '../helpers/checkIfExistsInDatabase.helper.js';
 
 // Login by identification and pin method
 export const loginByIdentification = async (req, res) => {
@@ -126,7 +125,7 @@ export const createAccount = async (req, res) => {
             // Create a random account number
             account.accountNumber = await randomAccountNumberHelper();
             // Create an account
-            const serviceResponse = await accountService.createAccountService(account);
+            await accountService.createAccountService(account);
             // Create the response object
             response = {
                 status: 201,

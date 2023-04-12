@@ -3,7 +3,6 @@
 
 // Import the jsonwebtoken library
 import jwt from 'jsonwebtoken';
-
 // Import the JWT password
 import { JWT_PASSWORD } from '../config/env.config.js';
 

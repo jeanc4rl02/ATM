@@ -3,10 +3,8 @@
 
 // Importing the express router
 import { Router } from 'express';
-
 // Importing the account controller
 import * as accountController from '../controllers/account.controller.js';
-
 // Importing the verifyToken middleware
 import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 

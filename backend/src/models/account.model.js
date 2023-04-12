@@ -3,7 +3,6 @@
 
 // Import sequelize instance (Database connection)
 import atmDatabase from '../database/atm.database.js';
-
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
 
