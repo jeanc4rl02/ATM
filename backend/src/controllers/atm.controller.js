@@ -89,7 +89,7 @@ export const deleteAtm = async (req, res) => {
             });
         } catch (error) {
             console.log(error.message);
-            res.status(400).json({message: error.message});
+            res.status(500).json({message: error.message});
         }
         
     } else {
