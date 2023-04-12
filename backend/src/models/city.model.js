@@ -3,14 +3,15 @@ import sequelize from '../database/atm.database.js';
 
 import { DataTypes } from 'sequelize';
 
-const cityModel = sequelize.define('City', { 
+const cityModel = sequelize.define('city', { 
         name: {
-            type: DataTypes.STRING,
-            allowNull: false,  
+            type: DataTypes.STRING, 
+            allowNull: false,
+            unique: true,
         }
     }, 
-    { 
-        tableName: "City", 
+    {  
+        tableName: "citys", 
         timestamps: false 
     }
 );
