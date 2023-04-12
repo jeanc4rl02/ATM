@@ -14,9 +14,9 @@ import swaggerUi from 'swagger-ui-express';
 // Importing the swagger configuration
 import swaggerConfiguration from './config/swagger.config.js';
 
-//Importing de Routes
+// Importing account routes
+import accountRoutes from './routes/account.routes.js';
 import CityRouter from './routes/city.routes.js'
-
 // Creating an instance of express
 const app = express();
 
@@ -27,8 +27,8 @@ app.use(morgan('dev'));
 
 // Set routes
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
+app.use('/api/v1/accounts', accountRoutes);
 app.use('/api/v1/city', CityRouter)
-
 
 // Exporting the app
 export default app;

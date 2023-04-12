@@ -1,9 +1,9 @@
 
-import atmDatabase from '../database/atm.database.js';
+import sequelize from '../database/atm.database.js';
 
 import { DataTypes } from 'sequelize';
 
-const cityModel = atmDatabase.define('City', { 
+const cityModel = sequelize.define('City', { 
         name: {
             type: DataTypes.STRING,
             allowNull: false,  
