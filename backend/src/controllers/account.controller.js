@@ -1,6 +1,8 @@
 // Description: This file contains the controller for the account
 // Author: Sebastián Gámez Ariza{
 
+// Import account model
+import accountModel from '../models/account.model.js';
 // Import account services
 import * as accountService from '../services/account.service.js';
 // Import account schema
@@ -80,7 +82,8 @@ export const loginByIdentification = async (req, res) => {
         // Create the response object
         response = {
             status: 400,
-            message: 'Validation error'
+            message: 'Validation error',
+            data: error.details[0]
         };
     }
     // Send the response
@@ -150,7 +153,8 @@ export const createAccount = async (req, res) => {
         // Create the response object
         response = {
             status: 400,
-            message: 'Validation error'
+            message: 'Validation error',
+            data: error.details[0]
         };
     }
     // Send the response
@@ -198,7 +202,8 @@ export const updateAccount = async (req, res) => {
         // Create the response object
         response = {
             status: 400,
-            message: 'Validation error'
+            message: 'Validation error',
+            data: error.details[0]
         };
     }
     // Send the response
