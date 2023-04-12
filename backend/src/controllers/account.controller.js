@@ -32,19 +32,28 @@ export const loginByIdentification = async (req, res) => {
             if (accountDB) {
                 // Check if the pin is correct
                 if (accountDB.pin === account.pin) {
-                    // Sign token
-                    const token = signTokenHelper({accountNumber: accountDB.accountNumber});
-                    // Hide the pin
-                    accountDB.pin = null;
-                    // Create the response object
-                    response = {
-                        status: 200,
-                        message: 'Login successful',
-                        data: {
-                            token: token,
-                            account: accountDB
-                        }
-                    };
+                    if (accountDB.status) {
+                        // Sign token
+                        const token = signTokenHelper({accountNumber: accountDB.accountNumber});
+                        // Hide the pin
+                        accountDB.pin = null;
+                        // Create the response object
+                        response = {
+                            status: 200,
+                            message: 'Login successful',
+                            data: {
+                                token: token,
+                                account: accountDB
+                            }
+                        };
+                    }
+                    else {
+                        // Create the response object
+                        response = {
+                            status: 405,
+                            message: 'Account disabled'
+                        };
+                    }
                 }
                 // The pin is incorrect
                 else {
@@ -83,7 +92,9 @@ export const loginByIdentification = async (req, res) => {
         response = {
             status: 400,
             message: 'Validation error',
-            data: error.details[0]
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response
@@ -125,15 +136,27 @@ export const createAccount = async (req, res) => {
         await accountSchema.validateAsync(account);
         // Try to create an account
         try {
-            // Create a random account number
-            account.accountNumber = await randomAccountNumberHelper();
-            // Create an account
-            await accountService.createAccountService(account);
-            // Create the response object
-            response = {
-                status: 201,
-                message: 'Account created successfully'
-            };
+            // Check if the identification exists in the database
+            const identificationExists = await checkIfExistsInDatabaseHelper(accountModel, 'identification', account.identification);
+            // Check if the identification exists
+            if (!identificationExists) {
+                // Create a random account number
+                account.accountNumber = await randomAccountNumberHelper();
+                // Create an account
+                await accountService.createAccountService(account);
+                // Create the response object
+                response = {
+                    status: 201,
+                    message: 'Account created successfully'
+                };
+            }
+            else {
+                // Create the response object
+                response = {
+                    status: 406,
+                    message: 'The identification has already been registered'
+                };
+            }
         }
         // Catch the error
         catch (error) {
@@ -154,7 +177,9 @@ export const createAccount = async (req, res) => {
         response = {
             status: 400,
             message: 'Validation error',
-            data: error.details[0]
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response
@@ -175,14 +200,31 @@ export const updateAccount = async (req, res) => {
         account = await accountSchema.validateAsync(account);
         // Try to update an account
         try {
-            // Update an account
-            const { data: accountDB } = await accountService.updateAccountByIdService(id, account);
-            // Create the response object
-            response = {
-                status: 200,
-                message: 'Account updated successfully',
-                data: accountDB
-            };
+            // Create a variable to save the identification
+            let identificationExists = false;
+            // Check if the identification is a field to update
+            if (account.identification) {
+                // Check if the identification exists in the database
+                identificationExists = await checkIfExistsInDatabaseHelper(accountModel, 'identification', account.identification);
+            }
+            // Check if the identification exists
+            if (!identificationExists) {
+                // Update an account
+                const { data: accountDB } = await accountService.updateAccountByIdService(id, account);
+                // Create the response object
+                response = {
+                    status: 200,
+                    message: 'Account updated successfully',
+                    data: accountDB
+                };
+            }
+            else {
+                // Create the response object
+                response = {
+                    status: 406,
+                    message: 'The identification has already been registered'
+                };
+            }
         }
         // Catch the error
         catch (error) {
@@ -203,7 +245,9 @@ export const updateAccount = async (req, res) => {
         response = {
             status: 400,
             message: 'Validation error',
-            data: error.details[0]
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response
