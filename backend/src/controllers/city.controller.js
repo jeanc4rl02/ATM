@@ -1,4 +1,5 @@
-import cityModel  from "../models/city.model";
+import cityModel  from "../models/city.model.js";
+ 
 
 export const createCity = async (req, res) => {
     try {
@@ -66,5 +67,5 @@ export const deleteCity = async (req, res) => {
       console.error(error);
       res.status(500).json({ message: 'Error deleting the city' });
     }
-  };
+};
 
