@@ -1,19 +1,21 @@
 // Importing the app
 import app from './app.js';
-
-// Import the connection to the database
-// import connectDatabase from './database/atm.database.js';
-
-// Importing the environment variables
+// Importing port
 import {PORT} from './config/env.config.js';
-
-// Connect to the database;
-// connectDatabase();
+// Importing the test database function
+import testDatabase from './database/test.database.js';
+// Importing the sync database function
+import syncDatabase from './database/sync.database.js';
 
 // Setting the port
 const port = PORT || 3000;
 
 // Start the server
-app.listen(port, () => {
+app.listen(port, async () => {
+    // Log the server is running
     console.log(`Server is running on port ${port}`);
+    // Test the database connection
+    await testDatabase();
+    // Sync the database with the models
+    await syncDatabase();
 });
