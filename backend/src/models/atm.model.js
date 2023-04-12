@@ -1,5 +1,6 @@
 import sequelize from '../database/atm.database.js';
 import { DataTypes } from 'sequelize';
+import cityModel from './city.model.js';
 
 const atmModel = sequelize.define('atm', {
     id: {
@@ -32,9 +33,10 @@ const atmModel = sequelize.define('atm', {
     tableName: 'atms'
 });
 
-// atmDetail.belongsTo(atmModel, {
-//     foreignKey: 'atm_id',
-//     targetId: 'id'
-// });
+cityModel.hasMany(atmModel, {
+    foreignKey: 'city_id',
+    targetId: 'id',
+    allowNull: false
+});
 
 export default atmModel;
