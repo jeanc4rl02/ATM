@@ -5,16 +5,13 @@ import express from 'express';
 import morgan from 'morgan';
 // Importing the cors module
 import cors from 'cors';
-
-import atmRouter from './routes/atm.routes.js'
-
 // Importing the swagger UI
 import swaggerUi from 'swagger-ui-express';
 // Importing the swagger configuration
 import swaggerConfiguration from './config/swagger.config.js';
 // Importing account routes
 import accountRoutes from './routes/account.routes.js';
-
+import atmRouter from './routes/atm.routes.js';
 // Creating an instance of express
 const app = express();
 
