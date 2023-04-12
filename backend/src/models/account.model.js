@@ -3,7 +3,6 @@
 
 // Import sequelize instance (Database connection)
 import atmDatabase from '../database/atm.database.js';
-
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
 
@@ -12,6 +11,7 @@ const accountModel = atmDatabase.define('account', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true
     },
     identification: {
         type: DataTypes.STRING,
@@ -19,14 +19,15 @@ const accountModel = atmDatabase.define('account', {
         unique: true
     },
     accountNumber: {
-        type: DataTypes.STRING,
+        type: DataTypes.BIGINT,
         allowNull: false,
         unique: true,
         tableName: 'account_number'
     },
     balance: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false
+        allowNull: false,
+        defaultValue: 0
     },
     status: {
         type: DataTypes.BOOLEAN,
