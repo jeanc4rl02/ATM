@@ -3,7 +3,6 @@
 
 // Import account model
 import accountModel from '../models/account.model.js';
-
 // Import function to check if a value already exists in the database
 import checkIfExistsInDatabase from './checkIfExistsInDatabase.helper.js';
 

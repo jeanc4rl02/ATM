@@ -3,10 +3,8 @@
 
 // Importing the express router
 import { Router } from 'express';
-
 // Importing the account controller
 import * as accountController from '../controllers/account.controller.js';
-
 // Importing the verifyToken middleware
 import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 
@@ -163,6 +161,15 @@ const accountRouter = Router();
  *       example:
  *        status: 404
  *        message: User not found
+ *    405:
+ *     description: Account disabled
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Response'
+ *       example:
+ *        status: 405
+ *        message: Account disabled
  *    500:
  *     description: Error logging in
  *     content:
@@ -288,6 +295,15 @@ accountRouter.get('/', verifyTokenMiddleware, accountController.getAllAccounts);
  *       example:
  *        status: 403
  *        message: No token provided
+ *    406:
+ *     description: The identification has already been registered
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Response'
+ *       example:
+ *        status: 406
+ *        message: The identification has already been registered
  *    500:
  *     description: Error creating account
  *     content:
@@ -359,6 +375,15 @@ accountRouter.post('/', accountController.createAccount);
  *       example:
  *        status: 403
  *        message: No token provided
+ *    406:
+ *     description: The identification has already been registered
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Response'
+ *       example:
+ *        status: 406
+ *        message: The identification has already been registered
  *    500:
  *     description: Error updating account
  *     content:
