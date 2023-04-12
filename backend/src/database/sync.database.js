@@ -9,7 +9,7 @@ const syncDatabase = async () => {
 	// Try to sync the database
 	try {
 		// Sync the database
-		await accountModel.sync({force: true});
+		await accountModel.sync();
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {

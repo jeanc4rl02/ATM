@@ -24,47 +24,13 @@ export const getAllAccountsService = async () => {
     }
     // Catch the error
     catch (error) {
-        // Log the error
-        console.log(error);
         // Create the response object
         response = {
             status: 500,
             message: 'Error getting the accounts',
         };
-    }
-    // Return the response
-    return response;
-};
-
-// Get an account by id method
-export const getAccountByIdService = async (id) => {
-    // Create a response object
-    let response;
-    // Try to get an account by id
-    try {
-        // Get an account by id
-        const account = await accountModel.findOne({
-            where: {
-                id: id
-            },
-            attributes: { exclude: ['pin'] }
-        });
-        // Create the response object
-        response = {
-            status: 200,
-            message: 'Account found successfully',
-            data: account
-        };
-    }
-    // Catch the error
-    catch (error) {
-        // Log the error
-        console.log(error);
-        // Create the response object
-        response = {
-            status: 500,
-            message: 'Error getting the account',
-        };
+        // Throw the error
+        throw error;
     }
     // Return the response
     return response;
@@ -77,7 +43,7 @@ export const getAccountByIdentificationService = async (identification) => {
     // Try to get an account by identification
     try {
         // Get an account by identification
-        const account = await accountModel.findOne({
+        const accountDB = await accountModel.findOne({
             where: {
                 identification: identification
             }
@@ -86,18 +52,18 @@ export const getAccountByIdentificationService = async (identification) => {
         response = {
             status: 200,
             message: 'Account found successfully',
-            data: account
+            data: accountDB
         };
     }
     // Catch the error
     catch (error) {
-        // Log the error
-        console.log(error);
         // Create the response object
         response = {
             status: 500,
             message: 'Error getting the account',
         };
+        // Throw the error
+        throw error;
     }
     // Return the response
     return response;
@@ -120,13 +86,13 @@ export const createAccountService = async (account) => {
     }
     // Catch the error
     catch (error) {
-        // Log the error
-        console.log(error);
         // Create the response object
         response = {
             status: 500,
             message: 'Error creating the account',
         };
+        // Throw the error
+        throw error;
     }
     // Return the response
     return response;
@@ -139,26 +105,28 @@ export const updateAccountByIdService = async (id, account) => {
     // Try to update an account by id
     try {
         // Update an account by id
-        await accountModel.update(account, {
+        const accountDB = await accountModel.update(account, {
             where: {
                 id: id
-            }
+            },
+            returning: true
         });
         // Create the response object
         response = {
             status: 200,
             message: 'Account updated successfully',
+            data: accountDB
         };
     }
     // Catch the error
     catch (error) {
-        // Log the error
-        console.log(error);
         // Create the response object
         response = {
             status: 500,
             message: 'Error updating the account',
         };
+        // Throw the error
+        throw error;
     }
     // Return the response
     return response;
@@ -184,13 +152,13 @@ export const deleteAccountByIdService = async (id) => {
     }
     // Catch the error
     catch (error) {
-        // Log the error
-        console.log(error);
         // Create the response object
         response = {
             status: 500,
             message: 'Error deleting the account',
         };
+        // Throw the error
+        throw error;
     }
     // Return the response
     return response;
