@@ -12,7 +12,7 @@ export const createAtmDetail = async (req, res) => {
         atm_id == null //add query
     ) {
         res.status(400).json({
-            message: 'Only propertie "status" can be empty.'
+            message: 'field incomplete.'
         });
     } else {
         const newAtmDetail = await atmDetailModel.create({
