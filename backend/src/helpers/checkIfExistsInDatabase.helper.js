@@ -1,4 +1,4 @@
-//  Description: This file contains a function to check if a value already exists in the database
+// Description: This file contains a function to check if a value already exists in the database
 // Author: Sebastián Gámez Ariza
 
 // Import sequelize types
