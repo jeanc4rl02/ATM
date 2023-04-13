@@ -33,7 +33,7 @@ const atmModel = sequelize.define('atm', {
     tableName: 'atms'
 });
 
-cityModel.hasMany(atmModel, {
+atmModel.belongsTo(cityModel, {
     foreignKey: 'city_id',
     targetId: 'id',
     allowNull: false
