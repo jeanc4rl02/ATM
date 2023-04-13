@@ -5,13 +5,15 @@
 import accountModel from '../models/account.model.js';
 import cityModel  from "../models/city.model.js";
 import atmModel from '../models/atm.model.js';
- 
+import atmDetailModel from '../models/atmDetail.model.js';
 // Sync the database with the models
 const syncDatabase = async () => {
 	// Try to sync the database
 	try {
 		// Sync the database
 		await accountModel.sync(); 
+		await atmModel.sync(); 
+		await atmDetailModel.sync();
 		await cityModel.sync(); 
 		await atmModel.sync(); 
 		// Log the success message
