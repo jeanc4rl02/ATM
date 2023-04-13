@@ -1,8 +1,12 @@
 import atmModel from '../models/atm.model.js';
+import cityModel from '../models/city.model.js';
 import { v4 as uuid } from 'uuid';
 
 export const getAtms = async(req, res) => {
-    const atms = await atmModel.findAll()
+    const atms = await atmModel.findAll({
+        include: [{model: cityModel, as: 'city'}],
+        attributes: {exclude: ['city_id']},
+    })
     atms.length != 0 ? res.send(atms) : res.status(404).json({
         message: 'At the moment we have no ATMs to show. Please create one before using this request.'
     });
@@ -11,7 +15,10 @@ export const getAtms = async(req, res) => {
 
 export const getOneAtm = async(req, res) => {
     const {id} = req.params
-    const atm = await atmModel.findByPk(id)
+    const atm = await atmModel.findByPk(id, {
+        include: [{model: cityModel, as: 'city'}],
+        attributes: {exclude: ['city_id']},
+    })
     atm ? res.send(atm) : res.status(404).json({
         message: `At the moment we have no ATM with id: ${id} to show. Please make sure that the provided id exists in the database.`
     });
@@ -60,7 +67,6 @@ export const updateAtm = async (req, res) => {
             atmToUpdate.address = address
             atmToUpdate.city_id = city_id
             await atmToUpdate.save();
-            console.log(atmToUpdate);
             res.status(200).json(atmToUpdate);
         } catch (error) {
             console.log(error.message);
