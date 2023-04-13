@@ -47,9 +47,18 @@ const transactionModel = atmDatabase.define('transaction', {
 }, { tableName: 'transactions', timestamps: false } );
 
 // Create relationship with account model
-transactionModel.belongsTo( accountModel, { foreignKey: 'accountId', as: 'account' } );
+transactionModel.belongsTo( accountModel, { 
+    foreignKey: 'accountId', 
+    field: 'account_id',
+    as: 'account'
+});
+
 // Create relationship with atm model
-transactionModel.belongsTo( atmModel, { foreignKey: 'atmId', as: 'atm' } );
+transactionModel.belongsTo( atmModel, { 
+    foreignKey: 'atmId',
+    field: 'atm_id',
+    as: 'atm'
+});
 
 // Export account model
 export default transactionModel;
