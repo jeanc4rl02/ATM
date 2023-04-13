@@ -6,7 +6,6 @@ import morgan from 'morgan';
 // Importing the cors module
 import cors from 'cors';
 
-import atmRouter from './routes/atm.routes.js'
 import atmDetailRouter from './routes/atmDetail.routes.js'
 
 // Importing the swagger UI

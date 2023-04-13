@@ -4,8 +4,15 @@ import cityModel  from "../models/city.model.js";
 export const createCity = async (req, res) => {
     try {
       const { name } = req.body;
-      const city = await cityModel.create({ name });
+      
+      if(!name){
+        res.status(400).json({ message: 'Name not entered' });
+      }else{
+        const city = await cityModel.create({ name });
+      }
+      
       res.status(201).json(city);
+
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Error creating the city' });
@@ -15,6 +22,9 @@ export const createCity = async (req, res) => {
 export const getCities = async (req, res) => {
     try {
       const cities = await cityModel.findAll();
+      if(!cities){
+        res.status(404).json({ message: 'No Cities have been created. Please create a city' });
+      }
       res.status(200).json(cities);
     } catch (error) {
       console.error(error);
