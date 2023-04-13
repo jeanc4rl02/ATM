@@ -1,14 +1,18 @@
 // Description: This file contains the controller for the account
 // Author: Sebastián Gámez Ariza{
 
+// Import account model
+import accountModel from '../models/account.model.js';
 // Import account services
 import * as accountService from '../services/account.service.js';
-
 // Import account schema
 import accountSchema from '../schemas/account.schema.js';
-
 // Import sign token helper
-import signToken from '../helpers/signToken.helper.js';
+import signTokenHelper from '../helpers/signToken.helper.js';
+// Import random account number helper
+import randomAccountNumberHelper from '../helpers/randomAccountNumber.helper.js';
+// Importing the check if exists in database helper
+import checkIfExistsInDatabaseHelper from '../helpers/checkIfExistsInDatabase.helper.js';
 
 // Login by identification and pin method
 export const loginByIdentification = async (req, res) => {
@@ -20,36 +24,63 @@ export const loginByIdentification = async (req, res) => {
         let account = req.body;
         // Async account validation data with joi
         account = await accountSchema.validateAsync(account);
-        // Login by phone and pin
-        const { data: accountDB } = await accountService.getAccountByIdentificationService(account.identification);
-        // Check if the user exists
-        if (accountDB) {
-            // Check if the pin is correct
-            if (accountDB.pin === account.pin) {
-                // Sign token
-                const token = signToken(accountDB);
-                // Create the response object
-                response = {
-                    status: 200,
-                    message: 'Login successful',
-                    data: {...accountDB, pin: '', token: token}
-                };
+        // Try to login
+        try {
+            // Login by phone and pin
+            const {data: accountDB} = await accountService.getAccountByIdentificationService(account.identification);
+            // Check if the user exists
+            if (accountDB) {
+                // Check if the pin is correct
+                if (accountDB.pin === account.pin) {
+                    if (accountDB.status) {
+                        // Sign token
+                        const token = signTokenHelper({accountNumber: accountDB.accountNumber});
+                        // Hide the pin
+                        accountDB.pin = null;
+                        // Create the response object
+                        response = {
+                            status: 200,
+                            message: 'Login successful',
+                            data: {
+                                token: token,
+                                account: accountDB
+                            }
+                        };
+                    }
+                    else {
+                        // Create the response object
+                        response = {
+                            status: 405,
+                            message: 'Account disabled'
+                        };
+                    }
+                }
+                // The pin is incorrect
+                else {
+                    // Create the response object
+                    response = {
+                        status: 401,
+                        message: 'Incorrect pin'
+                    };
+                }
             }
-            // The pin is incorrect
+            // The user does not exist
             else {
                 // Create the response object
                 response = {
-                    status: 401,
-                    message: 'Incorrect pin'
+                    status: 404,
+                    message: 'User not found'
                 };
             }
         }
-        // The user does not exist
-        else {
+        // Catch the error
+        catch (error) {
+            // Log the error
+            console.log(error);
             // Create the response object
             response = {
-                status: 404,
-                message: 'User not found'
+                status: 500,
+                message: 'Error logging in'
             };
         }
     }
@@ -59,8 +90,11 @@ export const loginByIdentification = async (req, res) => {
         console.log(error);
         // Create the response object
         response = {
-            status: 500,
-            message: 'Error logging in'
+            status: 400,
+            message: 'Validation error',
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response
@@ -69,7 +103,24 @@ export const loginByIdentification = async (req, res) => {
 
 // Get all accounts method
 export const getAllAccounts = async (req, res) => {
-    const response = await accountService.getAllAccountsService();
+    // Create a response object
+    let response;
+    // Try to get all accounts
+    try {
+        // Get all accounts
+        response = await accountService.getAllAccountsService();
+    }
+    // Catch the error
+    catch (error) {
+        // Log the error
+        console.log(error);
+        // Create the response object
+        response = {
+            status: 500,
+            message: 'Error getting the accounts'
+        };
+    }
+    // Send the response
     res.status(response.status).send(response);
 };
 
@@ -82,14 +133,41 @@ export const createAccount = async (req, res) => {
         // Get the account data from the request
         let account = req.body;
         // Async account validation data with joi
-        account = await accountSchema.validateAsync(account);
-        // Create an account
-        await accountService.createAccountService(account);
-        // Create the response object
-        response = {
-            status: 201,
-            message: 'Account created successfully'
-        };
+        await accountSchema.validateAsync(account);
+        // Try to create an account
+        try {
+            // Check if the identification exists in the database
+            const identificationExists = await checkIfExistsInDatabaseHelper(accountModel, 'identification', account.identification);
+            // Check if the identification exists
+            if (!identificationExists) {
+                // Create a random account number
+                account.accountNumber = await randomAccountNumberHelper();
+                // Create an account
+                await accountService.createAccountService(account);
+                // Create the response object
+                response = {
+                    status: 201,
+                    message: 'Account created successfully'
+                };
+            }
+            else {
+                // Create the response object
+                response = {
+                    status: 406,
+                    message: 'The identification has already been registered'
+                };
+            }
+        }
+        // Catch the error
+        catch (error) {
+            // Log the error
+            console.log(error);
+            // Create the response object
+            response = {
+                status: 500,
+                message: 'Error creating the account'
+            };
+        }
     }
     // Catch the error
     catch (error) {
@@ -97,8 +175,11 @@ export const createAccount = async (req, res) => {
         console.log(error);
         // Create the response object
         response = {
-            status: 500,
-            message: 'Error creating the account'
+            status: 400,
+            message: 'Validation error',
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response
@@ -117,13 +198,44 @@ export const updateAccount = async (req, res) => {
         let account = req.body;
         // Async account validation data with joi
         account = await accountSchema.validateAsync(account);
-        // Update an account
-        await accountService.updateAccountByIdService(id, account);
-        // Create the response object
-        response = {
-            status: 200,
-            message: 'Account updated successfully'
-        };
+        // Try to update an account
+        try {
+            // Create a variable to save the identification
+            let identificationExists = false;
+            // Check if the identification is a field to update
+            if (account.identification) {
+                // Check if the identification exists in the database
+                identificationExists = await checkIfExistsInDatabaseHelper(accountModel, 'identification', account.identification);
+            }
+            // Check if the identification exists
+            if (!identificationExists) {
+                // Update an account
+                const { data: accountDB } = await accountService.updateAccountByIdService(id, account);
+                // Create the response object
+                response = {
+                    status: 200,
+                    message: 'Account updated successfully',
+                    data: accountDB
+                };
+            }
+            else {
+                // Create the response object
+                response = {
+                    status: 406,
+                    message: 'The identification has already been registered'
+                };
+            }
+        }
+        // Catch the error
+        catch (error) {
+            // Log the error
+            console.log(error);
+            // Create the response object
+            response = {
+                status: 500,
+                message: 'Error updating the account'
+            };
+        }
     }
     // Catch the error
     catch (error) {
@@ -131,8 +243,11 @@ export const updateAccount = async (req, res) => {
         console.log(error);
         // Create the response object
         response = {
-            status: 500,
-            message: 'Error updating the account'
+            status: 400,
+            message: 'Validation error',
+            data: {
+                message: error.details[0].message,
+            }
         };
     }
     // Send the response

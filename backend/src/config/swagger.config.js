@@ -3,7 +3,6 @@
 
 // Import the swagger-jsdoc
 import swaggerJsDoc from 'swagger-jsdoc';
-
 // Import the port and production url from the environment variables
 import { PORT } from './env.config.js';
 

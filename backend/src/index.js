@@ -1,12 +1,9 @@
 // Importing the app
 import app from './app.js';
-
 // Importing port
 import {PORT} from './config/env.config.js';
-
 // Importing the test database function
 import testDatabase from './database/test.database.js';
-
 // Importing the sync database function
 import syncDatabase from './database/sync.database.js';
 
