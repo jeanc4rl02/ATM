@@ -1,4 +1,5 @@
 import atmDetailModel from '../models/atmDetail.model.js';
+import atmModel from '../models/atm.model.js';
 
 //hundred, fifty, twenty, ten, atm_id
 
@@ -12,7 +13,7 @@ export const createAtmDetail = async (req, res) => {
         atm_id == null //add query
     ) {
         res.status(400).json({
-            message: 'Only propertie "status" can be empty.'
+            message: 'field incomplete.'
         });
     } else {
         const newAtmDetail = await atmDetailModel.create({
@@ -27,7 +28,10 @@ export const createAtmDetail = async (req, res) => {
 }
 
 export const getAtmDetails = async (req, res) => {
-    const atmDetails = await atmDetailModel.findAll()
+    const atmDetails = await atmDetailModel.findAll({
+        inclide: [{model: atmModel, as: 'atm'}],
+        attributes: {exclude: ['atm_id']},
+    })
     atmDetails.length != 0 ? res.send(atmDetails) : res.status(404).json({
         message: 'At the moment we have no ATMDetails to show. Please create one before using this request.'
     });
@@ -35,7 +39,10 @@ export const getAtmDetails = async (req, res) => {
 
 export const getOneAtmDetail = async (req, res) => {
     const { id } = req.params
-    const atmDetail = await atmDetailModel.findByPk(id)
+    const atmDetail = await atmDetailModel.findByPk(id, {
+        inclide: [{model: atmModel, as: 'atm'}],
+        attributes: {exclude: ['atm_id']},
+    })
     atmDetail ? res.send(atmDetail) : res.status(404).json({
         message: `At the moment we have no ATMDetail with id: ${id} to show. Please make sure that the provided id exists in the database.`
     });
