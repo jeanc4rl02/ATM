@@ -1,18 +1,19 @@
-import fetchDataHelper from "./fetchData.helper";
+import { getOneAtmDetail } from "../controllers/atmDetail.controller";
 
 let denominations = [  
+  /*
     { value: 100, count: 101 },  
     { value: 50, count: 101 },  
     { value: 20, count: 101 },  
     { value: 10, count: 101 },
-    ];
+*/  ];
 
-let denominationsCopy = [  
+let denominationsCopy = [  /*
     { value: 100, count: 0 },  
     { value: 50, count: 0 },  
     { value: 20, count: 0 },  
     { value: 10, count: 0 },
-    ];
+    */];
 
 const percentages = [0.6, 0.3, 0.1, 0.1];
 
@@ -20,12 +21,16 @@ let result = [];
 let remainder = 0;
 let sum = 0;
 
- 
-const init = () =>{
+const init = async (id) =>{
     result = [];
     remainder = 0;
     sum = 0;
-    denominations = fetchDataHelper(url, method, data) 
+    const valor = [100,50,20,10] 
+    const atmDetail = await getOneAtmDetail(id) 
+    denominations[0] = {value:100, count: atmDetail.hundred}
+    denominations[1] = {value:50, count: atmDetail.fifty}
+    denominations[2] = {value:20, count: atmDetail.twenty}
+    denominations[3] = {value:10, count: atmDetail.ten}
 }
 
 const calculateRemainder = (amount) => {
@@ -46,27 +51,20 @@ const calculateRemainder = (amount) => {
    //console.log("sobrante",amount, result)
 };
 
-const calculateRemainders = (amount) => {
-    let results= []
-    let remainders = amount
-    const denominations = [  
-    { value: 100, count: 5 },  
-    { value: 50, count: 100 },  
-    { value: 20, count: 100 },  
-    { value: 10, count: 0 },
-    ];  ///otro llamado a la db
+const calculateRemainders = async (amount, id) => {
+    await init(id);  ///otro llamado a la db
     for (let i = 0; i < denominations.length; i++) {
         const denomination = denominations[i];
-         if(denomination.count*denomination.value>=remainders){
-            const maxCount = Math.min( Math.floor(remainders / denomination.value), denomination.count );
+         if(denomination.count*denomination.value>=remainder){
+            const maxCount = Math.min( Math.floor(remainder / denomination.value), denomination.count );
            
-            results.push({ value: denomination.value, count: maxCount });
+            result.push({ value: denomination.value, count: maxCount });
         
-            remainders -= maxCount * denomination.value;
+            remainder -= maxCount * denomination.value;
             denominations[i].count -= maxCount;
              
          }else{
-               results.push({ value: denomination.value, count: 0 });
+               result.push({ value: denomination.value, count: 0 });
          }
     } 
     
@@ -76,10 +74,8 @@ const calculateRemainders = (amount) => {
     return results
 };
 
-const getMoney = (amount) => {
-  result = [];
-  remainder = 0;
-  sum = 0;
+const getMoney = async (amount, id) => {
+  await init(id)
 
   if (amount % 10 !== 0) {
     return "No se puede retirar la cantidad exacta";
@@ -121,7 +117,7 @@ const getMoney = (amount) => {
   }
 
   if (remainder !== 0) {
-      const rem = calculateRemainders(amount)
+      const rem = await calculateRemainders(amount, id)
        
       if(rem.legth>0){
         return rem 
