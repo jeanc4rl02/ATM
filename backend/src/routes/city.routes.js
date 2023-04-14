@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as citiesController from "../controllers/city.controller.js";
+import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 
 const CityRouter = Router();
 
@@ -33,6 +34,13 @@ const CityRouter = Router();
  *          schema:
  *              type: string
  *              description: the city_id 
+ *      token:
+ *          in: header
+ *          name: x-access-token
+ *          description: The token to access the API
+ *          schema:
+ *              type: string
+ *              required: true
  *  
 */
 
@@ -77,6 +85,8 @@ CityRouter.post('/', citiesController.createCity);
  *  get:
  *      summary: Return a City list
  *      tags: [City] 
+ *      parameter:
+ *          - $ref: '#/components/parameters/token'
  *      responses:
  *          200:
  *              description: A list of city
@@ -92,7 +102,7 @@ CityRouter.post('/', citiesController.createCity);
  *          
  */
 //get all cities
-CityRouter.get('/', citiesController.getCities);
+CityRouter.get('/', verifyTokenMiddleware, citiesController.getCities);
 
 
 /**
@@ -102,7 +112,8 @@ CityRouter.get('/', citiesController.getCities);
  *      summary: Return a City by id 
  *      tags: [City]
  *      parameters: 
- *          - $ref: '#/components/parameters/CityId'
+ *          - $ref: '#/components/parameters/token'
+ *          - $ref: '#/components/parameters/CityId' 
  *      responses:
  *          200:
  *              description: A city content by id
@@ -128,8 +139,9 @@ CityRouter.get('/:id', citiesController.getCity);
  * /api/v1/city/{id}:
  *  put:
  *      summary: Update a City by id 
- *      tags: [City]
- *      parameters: 
+ *      tags: [City] 
+ *      parameter:
+ *          - $ref: '#/components/parameters/token'
  *          - $ref: '#/components/parameters/CityId'
  *      requestBody:
  *          required: true
@@ -153,7 +165,7 @@ CityRouter.get('/:id', citiesController.getCity);
  *       
  */
 //update city
-CityRouter.put('/:id', citiesController.updateCity);
+CityRouter.put('/:id', verifyTokenMiddleware, citiesController.updateCity);
 
 
 /**
@@ -161,8 +173,9 @@ CityRouter.put('/:id', citiesController.updateCity);
  * /api/v1/city/{id}:
  *  delete:
  *      summary: Delete a City by id 
- *      tags: [City]
- *      parameters: 
+ *      tags: [City] 
+ *      parameter:
+ *          - $ref: '#/components/parameters/token'
  *          - $ref: '#/components/parameters/CityId'
  *      responses:
  *          200:
@@ -181,6 +194,6 @@ CityRouter.put('/:id', citiesController.updateCity);
  *       
  */
 // delete city
-CityRouter.delete('/:id', citiesController.deleteCity);
+CityRouter.delete('/:id', verifyTokenMiddleware, citiesController.deleteCity);
 
 export default CityRouter;
