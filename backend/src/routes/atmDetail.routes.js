@@ -6,6 +6,7 @@ import {
     updateAtmDetail,
     deleteAtmDetail,
 } from '../controllers/atmDetail.controller.js';
+import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 
 const router = Router();
 
@@ -105,7 +106,7 @@ const router = Router();
  *      400: 
  *        description: There are no registered Atmdetails
  */
-router.post('/', createAtmDetail)
+router.post('/', verifyTokenMiddleware, createAtmDetail)
 
 /**
 * @swagger
@@ -149,7 +150,7 @@ router.get('/', getAtmDetails)
  *              404:
  *                  description: The id provided doesn't exist in the database.
  * */
-router.get('/:id', getOneAtmDetail)
+router.get('/:id', verifyTokenMiddleware, getOneAtmDetail)
 
 /**
  * @swagger
@@ -179,7 +180,7 @@ router.get('/:id', getOneAtmDetail)
  *                  description: There is no ATMdetail registered with the provided id.
  */
 
-router.put('/:id', updateAtmDetail)
+router.put('/:id', verifyTokenMiddleware, updateAtmDetail)
 
 /**
  * @swagger
@@ -203,6 +204,6 @@ router.put('/:id', updateAtmDetail)
  *                  description: There is no ATMdetail registered with the provided id.
  */
 
-router.delete('/:id', deleteAtmDetail)
+router.delete('/:id', verifyTokenMiddleware, deleteAtmDetail)
 
 export default router;
