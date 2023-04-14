@@ -25,3 +25,4 @@ transactionRouter.get('/atm/:id', transactionController.getAllTransactionsByAtm)
 
 // Exporting the router
 export default transactionRouter;
+  
