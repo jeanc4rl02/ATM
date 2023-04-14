@@ -4,6 +4,12 @@
 // Importing transaction service
 import * as transactionService from '../services/transaction.service.js';
 
+// Importing atm detail service
+import * as atmDetailService from '../services/atmDetail.service.js';
+
+// Importing transaction schema
+import transactionSchema from '../schemas/transaction.schema.js';
+
 
 // Get all transactions
 export const getAllTransactions = async (req, res) => {
@@ -121,6 +127,63 @@ export const getAllTransactionsByAtm = async (req, res) => {
         response = {
             status: 500,
             message: 'Error getting the transactions',
+        };
+    }
+    // Send the response
+    res.status(response.status).send(response);
+}
+
+// Create a transaction
+export const createTransaction = async (req, res) => {
+    // Create a response object
+    let response;
+    // Try to validate a transaction
+    try {
+        // Get the transaction data
+        let transactionData = req.body;
+        // Validate the transaction data
+        transactionData = await transactionSchema.validateAsync(transactionData);
+        try {
+            // Create a transaction
+            const {data: transaction} = await transactionService.createTransactionService(transactionData);
+            // Validate the transaction type
+            if (transactionData.type === 'deposit') {
+                // Get the atm detail
+                const {data: atmDetail} = await atmDetailService.getAtmDetailByAtm(transactionData.atmId);
+                // Update the atm detail
+                await atmDetailService.updateAtmDetailService(atmDetail.id, {
+                    hundred: atmDetail.hundred + transactionData.hundred,
+                    fifty: atmDetail.fifty + transactionData.fifty,
+                    twenty: atmDetail.twenty + transactionData.twenty,
+                    ten: atmDetail.ten + transactionData.ten,
+                });
+            }
+            // Create the response object
+            response = {
+                status: 201,
+                message: 'Transaction created',
+                data: transaction
+            };
+        }
+        // Catch error
+        catch (error) {
+            // Log the error
+            console.log(error);
+            // Create the response object
+            response = {
+                status: 500,
+                message: 'Error creating the transaction',
+            };
+        }
+    }
+    // Catch error
+    catch (error) {
+        // Log the error
+        console.log(error);
+        // Create the response object
+        response = {
+            status: 400,
+            message: 'Validation error',
         };
     }
     // Send the response

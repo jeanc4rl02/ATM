@@ -29,7 +29,7 @@ export const createAtmDetail = async (req, res) => {
 
 export const getAtmDetails = async (req, res) => {
     const atmDetails = await atmDetailModel.findAll({
-        inclide: [{model: atmModel, as: 'atm'}],
+        include: [{model: atmModel, as: 'atm'}],
         attributes: {exclude: ['atm_id']},
     })
     atmDetails.length != 0 ? res.send(atmDetails) : res.status(404).json({
@@ -40,7 +40,19 @@ export const getAtmDetails = async (req, res) => {
 export const getOneAtmDetail = async (req, res) => {
     const { id } = req.params
     const atmDetail = await atmDetailModel.findByPk(id, {
-        inclide: [{model: atmModel, as: 'atm'}],
+        include: [{model: atmModel, as: 'atm'}],
+        attributes: {exclude: ['atm_id']},
+    })
+    atmDetail ? res.send(atmDetail) : res.status(404).json({
+        message: `At the moment we have no ATMDetail with id: ${id} to show. Please make sure that the provided id exists in the database.`
+    });
+}
+
+export const getAtmDetailByAtm = async (req, res) => {
+    const { id } = req.params
+    const atmDetail = await atmDetailModel.findOne({
+        where: {atm_id: id},
+        include: [{model: atmModel, as: 'atm'}],
         attributes: {exclude: ['atm_id']},
     })
     atmDetail ? res.send(atmDetail) : res.status(404).json({
