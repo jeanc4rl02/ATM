@@ -48,7 +48,7 @@ const atmDetailModel = atmDatabase.define('atmDetail', {
 atmModel.hasMany(atmDetailModel, {
     foreignKey: 'atm_id',
     targetId: 'id',
-    allowNull: flase
+    allowNull: false
 });
 
 // Export account model

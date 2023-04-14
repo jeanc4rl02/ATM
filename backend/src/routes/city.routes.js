@@ -65,12 +65,12 @@ const CityRouter = Router();
  *            $ref: '#/components/schemas/City'   
  *    responses:
  *      200:
- *        description: The city succesfully created
+ *        description: The city was succesfully created
  *        content:
  *          application/json:
  *            schema: 
  *              items: 
- *                $ref: '#/components/schemas/City'
+ *                  $ref: '#/components/schemas/City'
  * 
  *      400: 
  *        description: There are no registered city

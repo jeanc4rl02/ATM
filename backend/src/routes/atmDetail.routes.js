@@ -10,29 +10,6 @@ import {
 const router = Router();
 
 /**
- * @swagger
- *  /api/v1/atmdetails:
- *      post:
- *          summary: Save a new atmdetail
- *          tags: [Atmdetails]
- *          requestBody:
- *              required: true
- *              content:
- *                  application/json:
- *                      schema:
- *                          $ref: '#/components/schemas/Atmdetail'
- *          responses: 
- *              201:
- *                  description: Atmdetail was succesfully created
- *                  content: 
- *                      application/json:
- *                          schema:
- *                              $ref:  '#/components/schemas/Atmdetail'
- *              400:
- *                  description: field are empty or atm_id in foreign key doesn't exist.
-**/
-router.post('/', createAtmDetail)
-/**
 * @swagger
 * components:
 *  schemas:
@@ -56,7 +33,7 @@ router.post('/', createAtmDetail)
 *                   description: amount of cash
 *              atm_id:
 *                   type: DataTypes.INTEGER
-*                   description
+*                   description: atm id
 *          required: 
 *             - hundred
 *              - fifty
@@ -87,15 +64,42 @@ router.post('/', createAtmDetail)
 *  description: Endpoints of the atmDetail
 */
 
+ 
+/**
+ * @swagger
+ * /api/v1/atmdetails/:
+ *  post:
+ *    summary: create a new Atmdetails
+ *    tags: [AtmDetails] 
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            $ref: '#/components/schemas/Atmdetails'   
+ *    responses:
+ *      200:
+ *        description: The Atmdetails was succesfully created
+ *        content:
+ *          application/json:
+ *            schema: 
+ *              items: 
+ *                  $ref: '#/components/schemas/Atmdetails'
+ * 
+ *      400: 
+ *        description: There are no registered Atmdetails
+ */
+router.post('/', createAtmDetail)
+
 /**
 * @swagger
 *  /api/v1/atmdetails:
 *      get:
 *          summary: Get an atmdetails list
-*          tags: [Atmdetails]
+*          tags: [AtmDetails]
 *          responses: 
 *              200:
-*                  description: the list of atmdetailss.
+*                  description: the list of atmdetails.
 *                  content:
 *                      application/json:
 *                          schema:
@@ -111,7 +115,7 @@ router.get('/', getAtmDetails)
  *  /api/v1/atmdetails/{id}:
  *      get:
  *          summary: Get an atmdetail by id
- *          tags: [Atmdetails]
+ *          tags: [AtmDetails]
  *          parameters:
  *              - $ref: '#/components/parameters/atmdetailId'
  *          responses: 
@@ -133,7 +137,7 @@ router.get('/:id', getOneAtmDetail)
  *  /api/v1/atmdetails/{id}:
  *      put:
  *          summary: Update an atmdetail by id
- *          tags: [Atmdetails]
+ *          tags: [AtmDetails]
  *          parameters:
  *              - $ref: '#/components/parameters/atmdetailId'
  *          requestBody:
@@ -162,7 +166,7 @@ router.put('/:id', updateAtmDetail)
  *  /api/v1/atmdetails/{id}:
  *      delete: 
  *          summary: Delete an atmdetail by id
- *          tags: [Atmdetails]
+ *          tags: [AtmDetails]
  *          parameters:
  *              - $ref: '#/components/parameters/atmdetailId'
  *          responses:
