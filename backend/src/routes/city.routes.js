@@ -56,7 +56,9 @@ const CityRouter = Router();
  * /api/v1/city/:
  *  post:
  *    summary: create a new City
- *    tags: [City] 
+ *    tags: [City]  
+ *    parameters: 
+ *          - $ref: '#/components/parameters/token' 
  *    requestBody:
  *      required: true
  *      content:
@@ -76,7 +78,7 @@ const CityRouter = Router();
  *        description: There are no registered city
  */
 // create  city
-CityRouter.post('/', citiesController.createCity);
+CityRouter.post('/', verifyTokenMiddleware, citiesController.createCity);
 
 
 /**
@@ -85,8 +87,8 @@ CityRouter.post('/', citiesController.createCity);
  *  get:
  *      summary: Return a City list
  *      tags: [City] 
- *      parameter:
- *          - $ref: '#/components/parameters/token'
+ *      parameters: 
+ *          - $ref: '#/components/parameters/token' 
  *      responses:
  *          200:
  *              description: A list of city
@@ -131,7 +133,7 @@ CityRouter.get('/', verifyTokenMiddleware, citiesController.getCities);
  *       
  */
 //get city
-CityRouter.get('/:id', citiesController.getCity);
+CityRouter.get('/:id', verifyTokenMiddleware, citiesController.getCity);
 
 
 /**
@@ -139,9 +141,9 @@ CityRouter.get('/:id', citiesController.getCity);
  * /api/v1/city/{id}:
  *  put:
  *      summary: Update a City by id 
- *      tags: [City] 
- *      parameter:
- *          - $ref: '#/components/parameters/token'
+ *      tags: [City]  
+ *      parameters: 
+ *          - $ref: '#/components/parameters/token' 
  *          - $ref: '#/components/parameters/CityId'
  *      requestBody:
  *          required: true
@@ -174,7 +176,7 @@ CityRouter.put('/:id', verifyTokenMiddleware, citiesController.updateCity);
  *  delete:
  *      summary: Delete a City by id 
  *      tags: [City] 
- *      parameter:
+ *      parameters:
  *          - $ref: '#/components/parameters/token'
  *          - $ref: '#/components/parameters/CityId'
  *      responses:

@@ -6,6 +6,7 @@ import {
     getOneAtm,
     updateAtm,
 } from '../controllers/atm.controller.js';
+import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 
 const router = Router();
 /**
@@ -57,6 +58,13 @@ const router = Router();
  *          schema:
  *              type: number
  *          description: Id of the atm.
+ *      token:
+ *          in: header
+ *          name: x-access-token
+ *          description: Security token
+ *          schema:
+ *              type: string
+ *          required: true
  */
 
 /**
@@ -72,6 +80,8 @@ const router = Router();
  *      get:
  *          summary: Get an atm list
  *          tags: [Atms]
+ *          parameters:
+ *              - $ref: '#/components/parameters/token'
  *          responses: 
  *              200:
  *                  description: the list of atms.
@@ -84,7 +94,7 @@ const router = Router();
  *              404:
  *                  description: the list of atms is empty
  * */
-router.get('/', getAtms)
+router.get('/', verifyTokenMiddleware, getAtms)
 
 /**
  * @swagger
@@ -93,6 +103,7 @@ router.get('/', getAtms)
  *          summary: Get an atm by id
  *          tags: [Atms]
  *          parameters:
+ *              - $ref: '#/components/parameters/token'
  *              - $ref: '#/components/parameters/atmId'
  *          responses: 
  *              200:
@@ -106,7 +117,7 @@ router.get('/', getAtms)
  *              404:
  *                  description: The id provided doesn't exist in the database.
  * */
-router.get('/:id', getOneAtm)
+router.get('/:id', verifyTokenMiddleware, getOneAtm)
 
 /**
  * @swagger
@@ -120,6 +131,8 @@ router.get('/:id', getOneAtm)
  *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Atm'
+ *          parameters:
+ *              - $ref: '#/components/parameters/token'
  *          responses: 
  *              201:
  *                  description: Atm was succesfully created
@@ -130,7 +143,7 @@ router.get('/:id', getOneAtm)
  *              400:
  *                  description: Only propertie "status" can be empty or Id in foreign key doesn't exist.
  * */
-router.post('/', createAtm)
+router.post('/', verifyTokenMiddleware, createAtm)
 
 /**
  * @swagger
@@ -140,6 +153,7 @@ router.post('/', createAtm)
  *          tags: [Atms]
  *          parameters:
  *              - $ref: '#/components/parameters/atmId'
+ *              - $ref: '#/components/parameters/token'
  *          requestBody:
  *              required: true
  *              content: 
@@ -158,7 +172,7 @@ router.post('/', createAtm)
  *              404:
  *                  description: There is no ATM registered with the provided id.
  */
-router.put('/:id', updateAtm)
+router.put('/:id', verifyTokenMiddleware, updateAtm)
 
 /**
  * @swagger
@@ -168,6 +182,7 @@ router.put('/:id', updateAtm)
  *          tags: [Atms]
  *          parameters:
  *              - $ref: '#/components/parameters/atmId'
+ *              - $ref: '#/components/parameters/token'
  *          responses:
  *              200:
  *                  description: The removal of the atm has been successfully completed.
@@ -180,6 +195,6 @@ router.put('/:id', updateAtm)
  *              404:
  *                  description: There is no ATM registered with the provided id.
  */
-router.delete('/:id', deleteAtm)
+router.delete('/:id', verifyTokenMiddleware, deleteAtm)
 
 export default router;
