@@ -7,6 +7,9 @@ import atmDatabase from '../database/atm.database.js';
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
 
+// Import atmModel to foreingkey
+import atmModel from './atm.model.js';
+
 // Define account model
 const atmDetailModel = atmDatabase.define('atmDetail', {
     id: {
@@ -35,7 +38,18 @@ const atmDetailModel = atmDatabase.define('atmDetail', {
         allowNull: false,
         tableName: 'atm'
     },
-}, { tableName: 'atm_details', timestamps: false });
+}, 
+{ 
+    tableName: 'atm_details', 
+    timestamps: false 
+});
+
+// add relation
+atmModel.hasMany(atmDetailModel, {
+    foreignKey: 'atm_id',
+    targetId: 'id',
+    allowNull: false
+});
 
 // Export account model
 export default atmDetailModel;
