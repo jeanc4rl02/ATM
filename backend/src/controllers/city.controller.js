@@ -9,9 +9,9 @@ export const createCity = async (req, res) => {
         res.status(400).json({ message: 'Name not entered' });
       }else{
         const city = await cityModel.create({ name });
+        res.status(201).json(city);
       }
       
-      res.status(201).json(city);
 
     } catch (error) {
       console.error(error);
