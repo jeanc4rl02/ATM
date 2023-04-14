@@ -6,90 +6,107 @@ import {
     updateAtmDetail,
     deleteAtmDetail,
 } from '../controllers/atmDetail.controller.js';
+import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
 
 const router = Router();
 
 /**
-* @swagger
-* components:
-*  schemas:
-*      AtmDetails:
-*          type: object
-*          properties:
-*              id:
-*                  type: integer
-*                  description: auto-generated id of atm.
-*              hundred:
-*                   type: DataTypes.INTEGER
-*                   description: amount of cash
-*              fifty:
-*                   type: DataTypes.INTEGER
-*                   description: amount of cash
-*              twenty:
-*                   type: DataTypes.INTEGER
-*                   description: amount of cash
-*              ten:
-*                   type: DataTypes.INTEGER
-*                   description: amount of cash
-*              atm_id:
-*                   type: DataTypes.INTEGER
-*                   description: atm id
-*          required: 
-*             - hundred
-*              - fifty
-*              - twenty
-*              - ten
-*              - atm_id
-*              
-*          example:
-*             hundred: 1,
-*             fifty: 2, 
-*             twenty: 3,
-*             ten: 4,
-*             atm_id: 4
-*  parameters:
-*      atmDetails Id:
-*          in: path
-*          name: id
-*          required: true
-*          schema:
-*              type: number
-*          description: Id of the atm Detail.
+ * @swagger
+ * components:
+ *  schemas:
+ *      AtmDetails:
+ *          type: object
+ *          properties:
+ *              id:
+ *                  type: integer
+ *                  description: auto-generated id of atm.
+ *              hundred:
+ *                  type: integer
+ *                  description: amount of cash
+ *              fifty:
+ *                  type: integer
+ *                  description: amount of cash
+ *              twenty:
+ *                  type: integer
+ *                  description: amount of cash
+ *              ten:
+ *                  type: integer
+ *                  description: amount of cash
+ *              atm_id:
+ *                  type: integer
+ *                  description: atm id
+ *          required: 
+ *              - hundred
+ *              - fifty
+ *              - twenty
+ *              - ten
+ *              - atm_id
+ *              
+ *          example:
+ *             hundred: 1,
+ *             fifty: 2, 
+ *             twenty: 3,
+ *             ten: 4,
+ *             atm_id: 4
+ *      AtmDetailsNotFound:
+ *          type: object
+ *          properties: 
+ *              msg:
+ *              type: string
+ *              description: not found AtmDetails
+ *          example:
+ *              msg: not found AtmDetails
+ *  parameters:
+ *      atmDetailsId:
+ *          in: path
+ *          name: id
+ *          required: true
+ *          schema:
+ *              type: string
+ *              description: Id of the atm Detail.
+ *      token:
+ *          in: header
+ *          name: x-access-token
+ *          description: The token to access the API
+ *          schema:
+ *              type: string
+ *              required: true
 */
 
 /**
-* @swagger
-* tags:
-*  name: AtmDetails
-*  description: Endpoints of the atmDetail
+ * @swagger
+ *  tags:
+ *      name: AtmDetails
+ *      description: Endpoints of the atmDetail
 */
 
- 
 /**
  * @swagger
  * /api/v1/atmdetails/:
  *  post:
- *    summary: create a new Atmdetails
- *    tags: [AtmDetails] 
- *    requestBody:
- *      required: true
+ *      summary: create a new Atmdetails
+ *      tags: [AtmDetails]
+ *      parameters: 
+ *          - $ref: '#/components/parameters/token'  
+ *      requestBody:
+ *          required: true
  *      content:
- *        application/json:
- *          schema:
- *            $ref: '#/components/schemas/Atmdetails'   
- *    responses:
- *      200:
- *        description: The Atmdetails was succesfully created
- *        content:
  *          application/json:
- *            schema: 
+ *          schema:
  *              items: 
- *                  $ref: '#/components/schemas/Atmdetails'
- * 
+ *                  $ref: '#/components/schemas/AtmDetails'   
+ *      responses:
+ *          200:
+ *              description: The Atmdetails was succesfully created
+ *              content:
+ *                  application/json:
+ *                      schema: 
+ *                          items: 
+ *                              $ref: '#/components/schemas/AtmDetails' 
  *      400: 
  *        description: There are no registered Atmdetails
  */
-router.post('/', createAtmDetail)
+router.post('/', verifyTokenMiddleware, createAtmDetail)
 
 /**
 * @swagger
@@ -97,6 +114,8 @@ router.post('/', createAtmDetail)
 *      get:
 *          summary: Get an atmdetails list
 *          tags: [AtmDetails]
+*          parameters: 
+*               - $ref: '#/components/parameters/token' 
 *          responses: 
 *              200:
 *                  description: the list of atmdetails.
@@ -105,7 +124,7 @@ router.post('/', createAtmDetail)
 *                          schema:
 *                              type: array
 *                              items: 
-*                                  $ref: '#/components/schemas/Atmdetails'
+*                                  $ref: '#/components/schemas/AtmDetails'
 *              404:
 *                  description: the list of atms is empty
 * */
@@ -116,8 +135,9 @@ router.get('/', getAtmDetails)
  *      get:
  *          summary: Get an atmdetail by id
  *          tags: [AtmDetails]
- *          parameters:
- *              - $ref: '#/components/parameters/atmdetailId'
+ *          parameters: 
+ *              - $ref: '#/components/parameters/token' 
+ *              - $ref: '#/components/parameters/atmDetailsId'
  *          responses: 
  *              200:
  *                  description: the atm with the id provided.
@@ -126,11 +146,11 @@ router.get('/', getAtmDetails)
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/Atmdetail'
+ *                                  $ref: '#/components/schemas/AtmDetails'
  *              404:
  *                  description: The id provided doesn't exist in the database.
  * */
-router.get('/:id', getOneAtmDetail)
+router.get('/:id', verifyTokenMiddleware, getOneAtmDetail)
 
 /**
  * @swagger
@@ -138,28 +158,29 @@ router.get('/:id', getOneAtmDetail)
  *      put:
  *          summary: Update an atmdetail by id
  *          tags: [AtmDetails]
- *          parameters:
- *              - $ref: '#/components/parameters/atmdetailId'
+ *          parameters: 
+ *              - $ref: '#/components/parameters/token' 
+ *              - $ref: '#/components/parameters/atmDetailsId'
  *          requestBody:
  *              required: true
  *              content: 
  *                  application/json:
  *                      schema:
- *                          $ref: '#/components/schemas/Atmdetail'
+ *                          $ref: '#/components/schemas/AtmDetails'
  *          responses:
  *              200:
  *                  description: The update of the atm has been successfully completed.
  *                  content:
  *                      application/json:
  *                          schema:
- *                              $ref: '#/components/schemas/atmdetail'
+ *                              $ref: '#/components/schemas/AtmDetails'
  *              400:
  *                  description: fields empty.
  *              404:
  *                  description: There is no ATMdetail registered with the provided id.
  */
 
-router.put('/:id', updateAtmDetail)
+router.put('/:id', verifyTokenMiddleware, updateAtmDetail)
 
 /**
  * @swagger
@@ -167,21 +188,22 @@ router.put('/:id', updateAtmDetail)
  *      delete: 
  *          summary: Delete an atmdetail by id
  *          tags: [AtmDetails]
- *          parameters:
- *              - $ref: '#/components/parameters/atmdetailId'
+ *          parameters: 
+ *              - $ref: '#/components/parameters/token' 
+ *              - $ref: '#/components/parameters/atmDetailsId'
  *          responses:
  *              200:
  *                  description: The removal of the atmdetail has been successfully completed.
  *                  content:
  *                      application/json:
  *                          schema:
- *                              $ref: '#/components/schemas/Atmdetail'
+ *                              $ref: '#/components/schemas/AtmDetails'
  *              500:
  *                  description: Server error.
  *              404:
  *                  description: There is no ATMdetail registered with the provided id.
  */
 
-router.delete('/:id', deleteAtmDetail)
+router.delete('/:id', verifyTokenMiddleware, deleteAtmDetail)
 
 export default router;
