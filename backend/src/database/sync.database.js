@@ -6,6 +6,8 @@ import accountModel from '../models/account.model.js';
 import cityModel  from "../models/city.model.js";
 import atmModel from '../models/atm.model.js';
 import atmDetailModel from '../models/atmDetail.model.js';
+import transactionModel from '../models/transaction.model.js';
+
 // Sync the database with the models
 const syncDatabase = async () => {
 	// Try to sync the database
@@ -16,6 +18,7 @@ const syncDatabase = async () => {
 		await atmDetailModel.sync();
 		await cityModel.sync(); 
 		await atmModel.sync(); 
+		await transactionModel.sync();
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
