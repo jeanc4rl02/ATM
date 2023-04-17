@@ -147,9 +147,9 @@ export const createTransaction = async (req, res) => {
             // Create a transaction
             const {data: transaction} = await transactionService.createTransactionService(transactionData);
             // Validate the transaction type
-            if (transactionData.type === 'deposit') {
+            if (transactionData.transactionType == 'deposit') {
                 // Get the atm detail
-                const {data: atmDetail} = await atmDetailService.getAtmDetailByAtm(transactionData.atmId);
+                const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
                 // Update the atm detail
                 await atmDetailService.updateAtmDetailService(atmDetail.id, {
                     hundred: atmDetail.hundred + transactionData.hundred,

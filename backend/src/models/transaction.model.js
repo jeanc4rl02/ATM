@@ -11,7 +11,7 @@ import { DataTypes } from 'sequelize';
 import accountModel from './account.model.js';
 
 // Import atm model
-import atmModel from './atm.model.js';
+import atmModel from './atm.model.js';          
 
 // Define account model
 const transactionModel = atmDatabase.define('transaction', {

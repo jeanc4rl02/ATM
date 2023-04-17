@@ -33,11 +33,6 @@ const atmDetailModel = atmDatabase.define('atmDetail', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    atm_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        tableName: 'atm'
-    },
 }, 
 { 
     tableName: 'atm_details', 
@@ -45,9 +40,9 @@ const atmDetailModel = atmDatabase.define('atmDetail', {
 });
 
 // add relation
-atmModel.hasMany(atmDetailModel, {
+atmDetailModel.belongsTo(atmModel, {
     foreignKey: 'atm_id',
-    targetId: 'id',
+    as: 'atm',
     allowNull: false
 });
 
