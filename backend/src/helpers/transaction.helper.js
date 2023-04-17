@@ -22,15 +22,15 @@ const init = async (id) =>{
     remainder = 0;
     sum = 0; 
     const atmDetail = await getAtmDetailByAtmService(id) 
-    denominations[0] = {value:100, count: atmDetail.hundred}
-    denominations[1] = {value:50, count: atmDetail.fifty}
-    denominations[2] = {value:20, count: atmDetail.twenty}
-    denominations[3] = {value:10, count: atmDetail.ten} 
+    denominations[0] = {value:100000, count: atmDetail.hundred}
+    denominations[1] = {value:50000, count: atmDetail.fifty}
+    denominations[2] = {value:20000, count: atmDetail.twenty}
+    denominations[3] = {value:10000, count: atmDetail.ten} 
     denominationsCopy = [  
-      { value: 100, count: 0 },  
-      { value: 50, count: 0 },  
-      { value: 20, count: 0 },  
-      { value: 10, count: 0 },
+      { value: 100000, count: 0 },  
+      { value: 50000, count: 0 },  
+      { value: 20000, count: 0 },  
+      { value: 10000, count: 0 },
       ];
     //  console.log("------------------------------------------------------------------------------------------\n \n")
     //console.log("init",id, atmDetail)
@@ -86,7 +86,7 @@ const getMoney = async (amount, id) => {
     return false;
   }
 
-  if (amount <= 100) {
+  if (amount <= 100000) {
     percentages[0] = 0.5;
     percentages[1] = 0.3;
     percentages[2] = 0.2;

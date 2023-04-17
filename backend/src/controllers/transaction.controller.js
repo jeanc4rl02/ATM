@@ -13,6 +13,11 @@ import transactionSchema from '../schemas/transaction.schema.js';
 //import transaction helper
 import getMoney from '../helpers/transaction.helper.js'
 
+//import send email helper
+import sendEmailHelper from '../helpers/sendEmail.helper.js'
+
+//import acountService
+import {getAccountByIdService, updateAccountByIdService} from '../services/account.service.js'
 // Get all transactions
 export const getAllTransactions = async (req, res) => {
     // Create a response object
@@ -164,33 +169,55 @@ export const createTransaction = async (req, res) => {
                 response = {
                     status: 201,
                     message: 'Transaction created',
-                    data: transaction
+                    data
+                    : transaction
                 };
             }else if(transactionData.transactionType == 'withdrawal'){
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
-                
                 console.log(getM)
-                
-                if(getM == false){
+                const userAmount = await getAccountByIdService(transaction.dataValues.accountId)
+                // userAmount = JSON.stringify(userAmount)
+                // userAmount = JSON.parse(userAmount)
+                //console.log(userAmount.data.balance)
+
+                if(transactionData.amount<= userAmount.data.balance){
+                    ///el monto de la cuenta
+                    if(getM == false){
+                        response = {
+                            status: 400,
+                            message: "Can't withdraw exact amount" 
+                        }
+                    }else{
+                        const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
+                        // Update the atm detail
+                        await atmDetailService.updateAtmDetailService(atmDetail.id, {
+                            hundred: atmDetail.hundred - getM[0].count,
+                            fifty: atmDetail.fifty - getM[1].count,
+                            twenty: atmDetail.twenty - getM[2].count,
+                            ten: atmDetail.ten - getM[3].count,
+                        });
+
+                        //update Acoount Balance
+                        await updateAccountByIdService(transaction.dataValues.accountId,{balance: userAmount.data.balance-transactionData.amount })
+                        
+                        //send email 
+                        const msg = await sendEmailHelper( 
+                            `${userAmount.data.email}`, 
+                            "withdrawal", 
+                            'You are informed that a withdrawal of '+transactionData.amount+' has been made from your account')
+                        // Create the response object
+                        response = {
+                            status: 201,
+                            message: 'Successful ATM Withdrawal',
+                            data: getM
+                        };
+                    }
+
+                }else{
                     response = {
                         status: 400,
-                        message: "Can't withdraw exact amount" 
+                        message: 'User does not have sufficient funds'
                     }
-                }else{
-                    const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
-                    // Update the atm detail
-                    await atmDetailService.updateAtmDetailService(atmDetail.id, {
-                        hundred: atmDetail.hundred - getM[0].count,
-                        fifty: atmDetail.fifty - getM[1].count,
-                        twenty: atmDetail.twenty - getM[2].count,
-                        ten: atmDetail.ten - getM[3].count,
-                    });
-                    // Create the response object
-                    response = {
-                        status: 201,
-                        message: 'Successful ATM Withdrawal',
-                        data: getM
-                    };
                 }
             }
            
