@@ -142,7 +142,7 @@ export const createTransaction = async (req, res) => {
     // Try to validate a transaction
     try { 
         // Get the transaction data
-        let transactionData = req.body;
+        let transactionData = req.body; 
         // Validate the transaction data
         transactionData = await transactionSchema.validateAsync(transactionData);
         try {
@@ -171,28 +171,31 @@ export const createTransaction = async (req, res) => {
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
                 
                 console.log(getM)
-                
-                if(getM == false){
-                    response = {
-                        status: 400,
-                        message: "Can't withdraw exact amount" 
+                 
+                    ///el monto de la cuenta
+                    if(getM == false){
+                        response = {
+                            status: 400,
+                            message: "Can't withdraw exact amount" 
+                        }
+                    }else{
+                        const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
+                        // Update the atm detail
+                        await atmDetailService.updateAtmDetailService(atmDetail.id, {
+                            hundred: atmDetail.hundred - getM[0].count,
+                            fifty: atmDetail.fifty - getM[1].count,
+                            twenty: atmDetail.twenty - getM[2].count,
+                            ten: atmDetail.ten - getM[3].count,
+                        });
+                        // Create the response object
+                        response = {
+                            status: 201,
+                            message: 'Successful ATM Withdrawal',
+                            data: getM
+                        };
                     }
-                }else{
-                    const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
-                    // Update the atm detail
-                    await atmDetailService.updateAtmDetailService(atmDetail.id, {
-                        hundred: atmDetail.hundred - getM[0].count,
-                        fifty: atmDetail.fifty - getM[1].count,
-                        twenty: atmDetail.twenty - getM[2].count,
-                        ten: atmDetail.ten - getM[3].count,
-                    });
-                    // Create the response object
-                    response = {
-                        status: 201,
-                        message: 'Successful ATM Withdrawal',
-                        data: getM
-                    };
-                }
+
+                 
             }
            
            
