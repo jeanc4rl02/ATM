@@ -170,11 +170,25 @@ export const createTransactionService = async (transaction) => {
     // Try to create a transaction
     try {
         // Create a transaction
-        await transactionModel.create(transaction);
+        const transactionDB = await transactionModel.create(transaction, {
+            include: [
+                {
+                    model: accountModel,
+                    as: 'account',
+                    attributes: {
+                        exclude: ['pin']
+                    }
+                }
+            ],
+            attributes: {
+                exclude: ['accountId']
+            }
+        });
         // Create the response object
         response = {
             status: 201,
             message: 'Transaction created successfully',
+            data: transactionDB
         };
     }
     // Catch the error
