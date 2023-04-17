@@ -43,10 +43,10 @@ const router = Router();
  *              - atm_id
  *              
  *          example:
- *             hundred: 1,
- *             fifty: 2, 
- *             twenty: 3,
- *             ten: 4,
+ *             hundred: 1
+ *             fifty: 2
+ *             twenty: 3
+ *             ten: 4
  *             atm_id: 4
  *      AtmDetailsNotFound:
  *          type: object
