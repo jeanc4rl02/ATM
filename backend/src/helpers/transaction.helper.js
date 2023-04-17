@@ -124,7 +124,7 @@ const getMoney = async (amount, id) => {
   if (remainder !== 0) {
       const rem = await calculateRemainders(amount, id)
        
-      if(rem.legth>0){
+      if(rem.length>0){
         return rem 
       }
       return false; 
