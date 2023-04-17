@@ -36,6 +36,41 @@ export const getAllAccountsService = async () => {
     return response;
 };
 
+// Get account by id method
+export const getAccountByIdService = async (id) => {
+    // Create a response object
+    let response;
+    // Try to get an account by id
+    try {
+        // Get an account by id
+        const accountDB = await accountModel.findOne({
+            where: {
+                id: id
+            },
+            attributes: { exclude: ['pin'] }
+        });
+        // Create the response object
+        response = {
+            status: 200,
+            message: 'Account found successfully',
+            data: accountDB
+        };
+    }
+    // Catch the error
+    catch (error) {
+        // Create the response object
+        response = {
+            status: 500,
+            message: 'Error getting the account',
+        };
+        // Throw the error
+        throw error;
+    }
+    // Return the response
+    return response;
+};
+
+
 // Get an account by identification method
 export const getAccountByIdentificationService = async (identification) => {
     // Create a response object
