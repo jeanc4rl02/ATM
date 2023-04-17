@@ -51,6 +51,11 @@ const transactionModel = atmDatabase.define('transaction', {
         allowNull: false,
         defaultValue: 0
     },
+    amount: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
 }, { tableName: 'transactions', timestamps: false } );
 
 // Create relationship with account model

@@ -1,4 +1,5 @@
-import { getOneAtmDetail } from "../controllers/atmDetail.controller";
+//import { getAtmDetailByAtmService } from "../controllers/atmDetail.controller.js";
+import {getAtmDetailByAtmService} from '../services/atmDetail.service.js'
 
 let denominations = [  
   /*
@@ -8,12 +9,7 @@ let denominations = [
     { value: 10, count: 101 },
 */  ];
 
-let denominationsCopy = [  /*
-    { value: 100, count: 0 },  
-    { value: 50, count: 0 },  
-    { value: 20, count: 0 },  
-    { value: 10, count: 0 },
-    */];
+let denominationsCopy = [];
 
 const percentages = [0.6, 0.3, 0.1, 0.1];
 
@@ -24,13 +20,21 @@ let sum = 0;
 const init = async (id) =>{
     result = [];
     remainder = 0;
-    sum = 0;
-    const valor = [100,50,20,10] 
-    const atmDetail = await getOneAtmDetail(id) 
+    sum = 0; 
+    const atmDetail = await getAtmDetailByAtmService(id) 
     denominations[0] = {value:100, count: atmDetail.hundred}
     denominations[1] = {value:50, count: atmDetail.fifty}
     denominations[2] = {value:20, count: atmDetail.twenty}
-    denominations[3] = {value:10, count: atmDetail.ten}
+    denominations[3] = {value:10, count: atmDetail.ten} 
+    denominationsCopy = [  
+      { value: 100, count: 0 },  
+      { value: 50, count: 0 },  
+      { value: 20, count: 0 },  
+      { value: 10, count: 0 },
+      ];
+    //  console.log("------------------------------------------------------------------------------------------\n \n")
+    //console.log("init",id, atmDetail)
+    //console.log("------------------------------------------------------------------------------------------\n \n")
 }
 
 const calculateRemainder = (amount) => {
@@ -53,6 +57,7 @@ const calculateRemainder = (amount) => {
 
 const calculateRemainders = async (amount, id) => {
     await init(id);  ///otro llamado a la db
+    remainder = amount
     for (let i = 0; i < denominations.length; i++) {
         const denomination = denominations[i];
          if(denomination.count*denomination.value>=remainder){
@@ -69,7 +74,7 @@ const calculateRemainders = async (amount, id) => {
     } 
     
     if(remainder !==0){
-      return []
+      return false
     }
     return result
 };
@@ -78,7 +83,7 @@ const getMoney = async (amount, id) => {
   await init(id)
 
   if (amount % 10 !== 0) {
-    return "No se puede retirar la cantidad exacta";
+    return false;
   }
 
   if (amount <= 100) {
@@ -122,10 +127,10 @@ const getMoney = async (amount, id) => {
       if(rem.legth>0){
         return rem 
       }
-      return "No se puede retirar la cantidad exacta"; 
+      return false; 
   }
   
-  console.log("denomination\n", denominations, denominationsCopy)    
+  // console.log("denomination\n", denominations, denominationsCopy)    
   return result;
 };
 
