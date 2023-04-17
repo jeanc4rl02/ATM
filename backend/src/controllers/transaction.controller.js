@@ -164,8 +164,7 @@ export const createTransaction = async (req, res) => {
                 response = {
                     status: 201,
                     message: 'Transaction created',
-                    data
-                    : transaction
+                    data: transaction
                 };
             }else if(transactionData.transactionType == 'withdrawal'){
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)

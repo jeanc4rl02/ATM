@@ -18,7 +18,7 @@ const syncDatabase = async () => {
 		await atmDetailModel.sync();
 		await cityModel.sync(); 
 		await atmModel.sync(); 
-		await transactionModel.sync({force:true});
+		await transactionModel.sync();
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
