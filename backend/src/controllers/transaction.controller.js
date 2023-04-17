@@ -13,6 +13,11 @@ import transactionSchema from '../schemas/transaction.schema.js';
 //import transaction helper
 import getMoney from '../helpers/transaction.helper.js'
 
+//import send email helper
+import sendEmailHelper from '../helpers/sendEmail.helper.js'
+
+//import acountService
+import {getAccountByIdService, updateAccountByIdService} from '../services/account.service.js'
 // Get all transactions
 export const getAllTransactions = async (req, res) => {
     // Create a response object
@@ -170,9 +175,12 @@ export const createTransaction = async (req, res) => {
             }else if(transactionData.transactionType == 'withdrawal'){
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
                 console.log(getM)
-                //const userAmount = transaction.account.balance (transaction.dataValues.accountId)
-                console.log(transaction.dataValues.accountId)
-                if(true){
+                const userAmount = await getAccountByIdService(transaction.dataValues.accountId)
+                // userAmount = JSON.stringify(userAmount)
+                // userAmount = JSON.parse(userAmount)
+                //console.log(userAmount.data.balance)
+
+                if(transactionData.amount<= userAmount.data.balance){
                     ///el monto de la cuenta
                     if(getM == false){
                         response = {
@@ -188,6 +196,15 @@ export const createTransaction = async (req, res) => {
                             twenty: atmDetail.twenty - getM[2].count,
                             ten: atmDetail.ten - getM[3].count,
                         });
+
+                        //update Acoount Balance
+                        await updateAccountByIdService(transaction.dataValues.accountId,{balance: userAmount.data.balance-transactionData.amount })
+                        
+                        //send email 
+                        const msg = await sendEmailHelper( 
+                            `${userAmount.data.email}`, 
+                            "withdrawal", 
+                            'You are informed that a withdrawal of '+transactionData.amount+' has been made from your account')
                         // Create the response object
                         response = {
                             status: 201,
