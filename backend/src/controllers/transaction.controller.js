@@ -142,7 +142,7 @@ export const createTransaction = async (req, res) => {
     // Try to validate a transaction
     try { 
         // Get the transaction data
-        let transactionData = req.body; 
+        let transactionData = req.body;
         // Validate the transaction data
         transactionData = await transactionSchema.validateAsync(transactionData);
         try {
@@ -164,13 +164,15 @@ export const createTransaction = async (req, res) => {
                 response = {
                     status: 201,
                     message: 'Transaction created',
-                    data: transaction
+                    data
+                    : transaction
                 };
             }else if(transactionData.transactionType == 'withdrawal'){
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
-                
                 console.log(getM)
-                 
+                //const userAmount = transaction.account.balance (transaction.dataValues.accountId)
+                console.log(transaction.dataValues.accountId)
+                if(true){
                     ///el monto de la cuenta
                     if(getM == false){
                         response = {
@@ -194,7 +196,12 @@ export const createTransaction = async (req, res) => {
                         };
                     }
 
-                 
+                }else{
+                    response = {
+                        status: 400,
+                        message: 'User does not have sufficient funds'
+                    }
+                }
             }
            
            
