@@ -166,7 +166,7 @@ export const createTransaction = async (req, res) => {
                     message: 'Transaction created',
                     data: transaction
                 };
-            }else {
+            }else if(transactionData.transactionType == 'withdrawal'){
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
                 
                 console.log(getM)
@@ -174,7 +174,7 @@ export const createTransaction = async (req, res) => {
                 if(getM == false){
                     response = {
                         status: 400,
-                        message: "No se puede retirar la cantidad exacta" 
+                        message: "Can't withdraw exact amount" 
                     }
                 }else{
                     const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
@@ -188,7 +188,7 @@ export const createTransaction = async (req, res) => {
                     // Create the response object
                     response = {
                         status: 201,
-                        message: 'Transaction created',
+                        message: 'Successful ATM Withdrawal',
                         data: getM
                     };
                 }
