@@ -32,6 +32,10 @@ const transactionSchema = joi.object({
         .number()
         .integer()
         .min(0),
+    amount: joi
+        .number()
+        .integer()
+        .min(0),
     accountId: joi
         .number()
         .integer()
