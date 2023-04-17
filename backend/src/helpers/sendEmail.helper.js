@@ -5,7 +5,7 @@
 import sgMail from '@sendgrid/mail';
 
 // Import the send grid api key
-import {SENDGRID_API_KEY} from '../config.js';
+import {SENDGRID_API_KEY} from '../config/env.config.js';
 
 // Send email helper
 const sendEmailHelper = async (email, subject, message) => {
