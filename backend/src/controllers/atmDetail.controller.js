@@ -48,18 +48,6 @@ export const getOneAtmDetail = async (req, res) => {
     });
 }
 
-export const getAtmDetailByAtm = async (req, res) => {
-    const { id } = req.params
-    const atmDetail = await atmDetailModel.findOne({
-        where: {atm_id: id},
-        include: [{model: atmModel, as: 'atm'}],
-        attributes: {exclude: ['atm_id']},
-    })
-    atmDetail ? res.send(atmDetail) : res.status(404).json({
-        message: `At the moment we have no ATMDetail with id: ${id} to show. Please make sure that the provided id exists in the database.`
-    });
-}
-
 export const updateAtmDetail = async (req, res) => {
     const { id } = req.params
     const atmDetailToUpdate = await atmDetailModel.findByPk(id)

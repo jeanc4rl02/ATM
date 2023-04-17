@@ -2,7 +2,7 @@
 // Author: Juan David Ospina Ortega
 
 // Importing the account model
-import atmDetailModel  from '../models/atmDetail.model.js';
+import atmDetailModel from '../models/atmDetail.model.js';
 
 
 // Get all atmdetails method
@@ -194,3 +194,33 @@ export const deleteAccountByIdService = async (id) => {
     return response;
 }
 */
+
+// Importing the atm detail model
+import atmDetailModel from '../models/atmDetail.model.js';
+// Importing the atm model
+import atmModel from '../models/atm.model.js';
+
+export const getAtmDetailByAtmService = async (atmId) => {
+    const atmDetail = await atmDetailModel.findOne({
+        where: {atm_id: atmId},
+        include: [{model: atmModel, as: 'atm'}],
+        attributes: {exclude: ['atm_id']},
+    })
+    return atmDetail ? atmDetail : `At the moment we have no ATMDetail with id: ${id} to show. Please make sure that the provided id exists in the database.`;
+}
+
+export const updateAtmDetailService = async (atmId, atmDetail) => {
+    const atmDetailToUpdate = await atmDetailModel.findByPk(atmId)
+    if (atmDetailToUpdate) {
+        const { hundred, fifty, twenty, ten, atm_id } = atmDetail;
+        atmDetailToUpdate.hundred = hundred
+        atmDetailToUpdate.fifty = fifty
+        atmDetailToUpdate.twenty = twenty
+        atmDetailToUpdate.ten = ten
+        atmDetailToUpdate.atm_id = atm_id;
+        await atmDetailToUpdate.save();
+        return atmDetailToUpdate;
+    } else {
+        return `At the moment we have no ATMDetail with id: ${id} to show. Please make sure that the provided id exists in the database.`;
+    }
+}

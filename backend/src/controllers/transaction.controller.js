@@ -10,6 +10,8 @@ import * as atmDetailService from '../services/atmDetail.service.js';
 // Importing transaction schema
 import transactionSchema from '../schemas/transaction.schema.js';
 
+//import transaction helper
+import getMoney from '../helpers/transaction.helper.js'
 
 // Get all transactions
 export const getAllTransactions = async (req, res) => {
@@ -138,7 +140,7 @@ export const createTransaction = async (req, res) => {
     // Create a response object
     let response;
     // Try to validate a transaction
-    try {
+    try { 
         // Get the transaction data
         let transactionData = req.body;
         // Validate the transaction data
@@ -147,9 +149,9 @@ export const createTransaction = async (req, res) => {
             // Create a transaction
             const {data: transaction} = await transactionService.createTransactionService(transactionData);
             // Validate the transaction type
-            if (transactionData.type === 'deposit') {
+            if (transactionData.transactionType == 'deposit') {
                 // Get the atm detail
-                const {data: atmDetail} = await atmDetailService.getAtmDetailByAtm(transactionData.atmId);
+                const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
                 // Update the atm detail
                 await atmDetailService.updateAtmDetailService(atmDetail.id, {
                     hundred: atmDetail.hundred + transactionData.hundred,
@@ -157,13 +159,43 @@ export const createTransaction = async (req, res) => {
                     twenty: atmDetail.twenty + transactionData.twenty,
                     ten: atmDetail.ten + transactionData.ten,
                 });
+
+                // Create the response object
+                response = {
+                    status: 201,
+                    message: 'Transaction created',
+                    data
+                    : transaction
+                };
+            }else if(transactionData.transactionType == 'withdrawal'){
+                const getM = await getMoney(transactionData.amount, transactionData.atmId)
+                
+                console.log(getM)
+                
+                if(getM == false){
+                    response = {
+                        status: 400,
+                        message: "Can't withdraw exact amount" 
+                    }
+                }else{
+                    const atmDetail = await atmDetailService.getAtmDetailByAtmService(transactionData.atmId);
+                    // Update the atm detail
+                    await atmDetailService.updateAtmDetailService(atmDetail.id, {
+                        hundred: atmDetail.hundred - getM[0].count,
+                        fifty: atmDetail.fifty - getM[1].count,
+                        twenty: atmDetail.twenty - getM[2].count,
+                        ten: atmDetail.ten - getM[3].count,
+                    });
+                    // Create the response object
+                    response = {
+                        status: 201,
+                        message: 'Successful ATM Withdrawal',
+                        data: getM
+                    };
+                }
             }
-            // Create the response object
-            response = {
-                status: 201,
-                message: 'Transaction created',
-                data: transaction
-            };
+           
+           
         }
         // Catch error
         catch (error) {

@@ -22,6 +22,9 @@ transactionRouter.get('/account/:id', transactionController.getAllTransactionsBy
 // Get all transactions by atm
 transactionRouter.get('/atm/:id', transactionController.getAllTransactionsByAtm);
 
+// Create transaction
+transactionRouter.post('/', transactionController.createTransaction);
+
 
 // Exporting the router
 export default transactionRouter;

@@ -11,7 +11,7 @@ import { DataTypes } from 'sequelize';
 import accountModel from './account.model.js';
 
 // Import atm model
-import atmModel from './atm.model.js';
+import atmModel from './atm.model.js';          
 
 // Define account model
 const transactionModel = atmDatabase.define('transaction', {
@@ -49,6 +49,11 @@ const transactionModel = atmDatabase.define('transaction', {
     ten: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0
+    },
+    amount: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
         defaultValue: 0
     },
 }, { tableName: 'transactions', timestamps: false } );
