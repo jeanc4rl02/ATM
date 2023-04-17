@@ -68,10 +68,10 @@ const calculateRemainders = async (amount, id) => {
          }
     } 
     
-    if(remainders !==0){
+    if(remainder !==0){
       return []
     }
-    return results
+    return result
 };
 
 const getMoney = async (amount, id) => {
@@ -129,4 +129,5 @@ const getMoney = async (amount, id) => {
   return result;
 };
 
-console.log(getMoney(1000));
+export default getMoney;
+//console.log(getMoney(1000));
