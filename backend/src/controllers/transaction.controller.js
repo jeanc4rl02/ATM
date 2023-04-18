@@ -201,10 +201,12 @@ export const createTransaction = async (req, res) => {
                         await updateAccountByIdService(transaction.dataValues.accountId,{balance: userAmount.data.balance-transactionData.amount })
                         
                         //send email 
+                        /*
                         const msg = await sendEmailHelper( 
                             `${userAmount.data.email}`, 
                             "withdrawal", 
                             'You are informed that a withdrawal of '+transactionData.amount+' has been made from your account')
+                        */
                         // Create the response object
                         response = {
                             status: 201,
