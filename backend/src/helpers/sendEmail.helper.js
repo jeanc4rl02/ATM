@@ -1,5 +1,5 @@
 // Description: This file contains a helper function to send emails
-// Authors: Jean Carlos Carrillo && Sebastián Gámez Ariza
+// Authors: Sebastián Gámez Ariza
 
 // Import send grid email
 import sgMail from '@sendgrid/mail';

@@ -6,7 +6,7 @@ import accountModel from '../models/account.model.js';
 
 
 // Get all accounts method
-export const getAllAccountsService = async () => {
+export const getAllAccountsService = async () => {x
     // Create a response object
     let response;
     // Try to get all accounts
