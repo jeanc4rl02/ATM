@@ -176,10 +176,6 @@ export const createTransaction = async (req, res) => {
                 const getM = await getMoney(transactionData.amount, transactionData.atmId)
                 console.log(getM)
                 const userAmount = await getAccountByIdService(transaction.dataValues.accountId)
-                // userAmount = JSON.stringify(userAmount)
-                // userAmount = JSON.parse(userAmount)
-                //console.log(userAmount.data.balance)
-
                 if(transactionData.amount<= userAmount.data.balance){
                     ///el monto de la cuenta
                     if(getM == false){
@@ -197,16 +193,21 @@ export const createTransaction = async (req, res) => {
                             ten: atmDetail.ten - getM[3].count,
                         });
 
-                        //update Acoount Balance
+                        // Update Account balance
                         await updateAccountByIdService(transaction.dataValues.accountId,{balance: userAmount.data.balance-transactionData.amount })
                         
-                        //send email 
-                        /*
-                        const msg = await sendEmailHelper( 
-                            `${userAmount.data.email}`, 
-                            "withdrawal", 
-                            'You are informed that a withdrawal of '+transactionData.amount+' has been made from your account')
-                        */
+                        // Try to send email 
+                        try {
+                            await sendEmailHelper( 
+                                `${userAmount.data.email}`, 
+                                "withdrawal", 
+                                'You are informed that a withdrawal of '+transactionData.amount+' has been made from your account'
+                            );
+                        
+                        } catch (error) {
+                            console.log(error);
+                        }
+                        
                         // Create the response object
                         response = {
                             status: 201,
